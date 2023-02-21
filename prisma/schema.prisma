@@ -10,29 +10,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Category {
-  id              Int         @id @default(autoincrement())
-  name            String
-  threads         Thread[]
+model Student {
+  id              Int        @id @default(autoincrement())
+  name            String     @unique
+  code            String     @unique
+  Absencess       Absences[]
+  Cerfiticate_Applicationss  Cerfiticate_Applications[]
 }
 
-model Thread {
-  id              BigInt      @id @default(autoincrement())
-  category        Category    @relation(fields: [category_id], references: [id])
-  category_id     Int
-  title           String
-  updated_at      DateTime?
-  messages        Message[]
+model Absences {
+  id              Int       @id @default(autoincrement())
+  student_id      Student @relation(fields: [studentId], references: [id])
+  studentId       Int
+  kind            Int
+  reason          String
+  start_date      DateTime?
+  end_date        DateTime
+  create_at       DateTime @default(now())
 }
 
-model Message {
-  id              Int
-  thread_id       BigInt
-  thread          Thread      @relation(fields: [thread_id], references: [id])
-  name            String
-  comment         String
-  delete_key      String
-  created_at      DateTime    @updatedAt
-  is_delete       Boolean     @default(false)
-  @@id([id, thread_id])
+model Cerfiticate_Applications {
+  id              Int       @id @default(autoincrement())
+  student_id      Student @relation(fields: [studentId], references: [id])
+  studentId       Int
+  certificate_of_enrollment  Int @default(0)
+  transcript      Int @default(0)
+  attendance_certificate  Int @default(0)
+  certificate_of_expected_graduation  Int @default(0)
+  graduation_certificate  Int @default(0)
+  health_certificate  Int @default(0)
+  created_at      DateTime @default(now())
+  scheduled_date  DateTime @default(now())
 }
+
