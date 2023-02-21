@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id              Int         @id @default(autoincrement())
+  name            String
+  threads         Thread[]
+}
+
+model Thread {
+  id              BigInt      @id @default(autoincrement())
+  category        Category    @relation(fields: [category_id], references: [id])
+  category_id     Int
+  title           String
+  updated_at      DateTime?
+  messages        Message[]
+}
+
+model Message {
+  id              Int
+  thread_id       BigInt
+  thread          Thread      @relation(fields: [thread_id], references: [id])
+  name            String
+  comment         String
+  delete_key      String
+  created_at      DateTime    @updatedAt
+  is_delete       Boolean     @default(false)
+  @@id([id, thread_id])
+}
