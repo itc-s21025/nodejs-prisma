@@ -40,6 +40,6 @@ model Cerfiticate_Applications {
   graduation_certificate  Int @default(0)
   health_certificate  Int @default(0)
   created_at      DateTime @default(now())
-  scheduled_date  DateTime @default(now())
+  scheduled_date  DateTime @default(dbgenerated("NOW() + '7 days'"))
 }
 
