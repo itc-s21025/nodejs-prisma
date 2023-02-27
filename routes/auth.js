@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const {PrismaClient} = require('@prisma/client');
-const pg = require('pg');
 const prisma = new PrismaClient();
 
 
