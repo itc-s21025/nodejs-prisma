@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const {PrismaClient} = require('@prisma/client');
+const pg = require('pg');
 const prisma = new PrismaClient();
 
 
@@ -16,36 +17,33 @@ router.post("/register", async (req, res) => {
 
 // ログイン
 router.post('/login', async (req, res) => {
-    const student_code = {data: req.body};
-    const student = await prisma.student.findFirst({
-        where: {
-            code: student_code
-        }
-    })
-    if (student == null) {
-        res.json({status: 0})
-    }else {
-        req.session.student = student
-        res.json({status: 1})
-    }
-})
-/**const data = {data: req.body};
- const studentid = await prisma.student.findFirst({
+    const {data} = req.body
+    const studentid = await prisma.student.findFirst({
         where: {
             code: data
         }
     })
- if (studentid == null) {
+    if (studentid == null) {
         res.json({status: 0})
     }else {
-        req.session.studentid = studentid
+        console.log(req.session)
+        req.session.student = studentid
         res.json({status: 1})
-    }
- });
- **/
 
-router.post('/logout', async (req, res) => {
-    res.session.studentId
+    }
+    })
+
+router.get('/info', (req, res) => {
+    const student = req.session.student
+    if (student === undefined) {
+        res.send("loginしていません")
+    }else {
+        res.json(student)
+    }
+})
+
+router.get('/logout', async (req, res) => {
+    req.session.student = undefined
     res.json({status: 0})
 });
 
